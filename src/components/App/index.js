@@ -15,6 +15,7 @@ import withAuthentication from '../Session/withAuthentication';
 import * as routes from '../../constants/routes';
 
 import './index.css';
+import '../../scss/main.scss';
 
 const App = () =>
   <Router>
