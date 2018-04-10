@@ -25,7 +25,7 @@ const config = process.env.NODE_ENV === 'production'
 if (!firebase.apps.length) {
   console.log('Hello');
   console.log('ENV Variables', process.env);
-  // firebase.initializeApp(config);
+  firebase.initializeApp(config);
 }
 
 const db = firebase.database();
