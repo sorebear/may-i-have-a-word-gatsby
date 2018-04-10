@@ -1,12 +1,12 @@
 import * as firebase from 'firebase';
 
 const prodConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  API_KEY : 'AIzaSyDrj7sZyKTneCIj5vlp5uA_6m5uu-vp2H4',
+  AUTH_DOMAIN : 'may-i-had-a-word.firebaseapp.com',
+  DATABASE_URL : 'https://may-i-had-a-word.firebaseio.com',
+  PROJECT_ID : 'may-i-had-a-word',
+  STORAGE_BUCKET : 'may-i-had-a-word.appspot.com',
+  MESSAGING_SENDER_ID : 205632515292,
 };
 
 const devConfig = {
