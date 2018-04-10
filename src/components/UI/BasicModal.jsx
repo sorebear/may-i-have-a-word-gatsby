@@ -14,7 +14,10 @@ export default BasicModal;
 BasicModal.propTypes = {
   className: PropTypes.string,
   children: PropTypes.element.isRequired,
-  showModal: PropTypes.bool.isRequired,
+  showModal: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.string,
+  ]).isRequired,
 };
 
 BasicModal.defaultProps = {
