@@ -1,12 +1,12 @@
 import * as firebase from 'firebase';
 
 const prodConfig = {
-  API_KEY : 'AIzaSyDrj7sZyKTneCIj5vlp5uA_6m5uu-vp2H4',
-  AUTH_DOMAIN : 'may-i-had-a-word.firebaseapp.com',
-  DATABASE_URL : 'https://may-i-had-a-word.firebaseio.com',
-  PROJECT_ID : 'may-i-had-a-word',
-  STORAGE_BUCKET : 'may-i-had-a-word.appspot.com',
-  MESSAGING_SENDER_ID : 205632515292,
+  apiKey: "AIzaSyDrj7sZyKTneCIj5vlp5uA_6m5uu-vp2H4",
+  authDomain: "may-i-had-a-word.firebaseapp.com",
+  databaseURL: "https://may-i-had-a-word.firebaseio.com",
+  projectId: "may-i-had-a-word",
+  storageBucket: "may-i-had-a-word.appspot.com",
+  messagingSenderId: "205632515292"
 };
 
 const devConfig = {
@@ -23,8 +23,6 @@ const config = process.env.NODE_ENV === 'production'
   : devConfig;
 
 if (!firebase.apps.length) {
-  console.log('Hello');
-  console.log('ENV Variables', process.env);
   firebase.initializeApp(config);
 }
 
