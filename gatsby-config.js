@@ -3,7 +3,7 @@ module.exports = {
     title: `Gatsby Firebase Authentication`,
   },
   plugins: [
+    `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-sass`
   ],
 }
