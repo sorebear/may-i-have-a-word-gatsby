@@ -85,6 +85,7 @@ class HomePage extends Component {
   }
 
   render() {
+    console.log("ENV", process.env.TEST);
     return (
       <div>
         <button

@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "author": "Robin Wieruch <wrobin@gmx.net>",
   "dependencies": {
+    "dotenv": "^5.0.1",
     "firebase": "^4.8.0",
     "gatsby": "^1.9.127",
     "gatsby-link": "^1.6.30",
