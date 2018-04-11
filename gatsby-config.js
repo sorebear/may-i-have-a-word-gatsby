@@ -3,7 +3,7 @@ module.exports = {
     title: `May I Have A Word`,
   },
   plugins: [
-    `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sass`
   ],
 }
