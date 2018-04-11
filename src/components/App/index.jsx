@@ -13,6 +13,7 @@ import * as routes from '../../constants/routes';
 
 // import '../../scss/main.scss';
 // import 'styles.css';
+import './test.css';
 
 const App = () =>
   <Router>
