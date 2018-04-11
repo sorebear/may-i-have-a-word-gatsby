@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Firebase Authentication`,
+    title: `May I Have A Word`,
   },
   plugins: [
     `gatsby-plugin-sass`,

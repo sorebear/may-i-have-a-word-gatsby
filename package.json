@@ -2,7 +2,7 @@
   "name": "gatsby-firebase-authentication",
   "description": "Gatsby Firebase Authentication",
   "version": "1.0.0",
-  "author": "Robin Wieruch <wrobin@gmx.net>",
+  "author": "Soren Baird <soren@sorenbaird.com>",
   "dependencies": {
     "dotenv": "^5.0.1",
     "firebase": "^4.8.0",
