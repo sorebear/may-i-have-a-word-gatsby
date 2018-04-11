@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { firebase } from '../../firebase';
+import '../../scss/main.scss';
 
 const withAuthentication = (Component) => {
   class WithAuthentication extends React.Component {
