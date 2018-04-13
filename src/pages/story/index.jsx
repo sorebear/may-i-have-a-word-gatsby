@@ -53,15 +53,8 @@ class Story extends Component {
     }
     return fromObjectToList(this.state.story.chapters).map((chapter, index) => {
       return (
-        <li
-          key={chapter.index}
-        >
-          <Link 
-            to={`/story/chapter/
-            ?storyTitle=${this.storyTitle}
-            &storyId=${this.storyId}
-            &chapterId=${chapter.index}`}
-          >
+        <li key={chapter.index}>
+          <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
             {chapter.title}
           </Link>
         </li>
