@@ -56,7 +56,12 @@ class Story extends Component {
         <li
           key={chapter.index}
         >
-          <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
+          <Link 
+            to={`/story/chapter/
+            ?storyTitle=${this.storyTitle}
+            &storyId=${this.storyId}
+            &chapterId=${chapter.index}`}
+          >
             {chapter.title}
           </Link>
         </li>
