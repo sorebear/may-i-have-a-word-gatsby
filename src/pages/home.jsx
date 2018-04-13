@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Link from 'gatsby-link';
+import Link, { navigateTo } from 'gatsby-link';
 
 import withAuthorization from '../components/Session/withAuthorization';
 import firebase from 'firebase';
@@ -47,9 +47,8 @@ class HomePage extends Component {
     e.preventDefault();
     const newStoryTitle = this.state.newStoryTitle.replace(' ', '_');
     db.createNewStory( this.uid, newStoryTitle).then((res) => {
-      // this.getCurrentUserStories();
       const storyId = res.path.pieces_[res.path.pieces_.length - 1];
-      this.props.history.push(`/story/?storyTitle=${this.state.newStoryTitle}&storyId=${storyId}`);
+      navigateTo(`/story/index.html?storyTitle=${this.state.newStoryTitle}&storyId=${storyId}`);
     });
   }
 
@@ -63,7 +62,7 @@ class HomePage extends Component {
     return this.state.userStories.map(story => {
       return (
         <li key={story.index}>
-          <Link to={`/story/?storyTitle=${story.title}&storyId=${story.index}`}>
+          <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
             {story.title.replace('_', ' ')}
           </Link>
           <button

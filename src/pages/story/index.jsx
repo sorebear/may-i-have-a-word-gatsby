@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Link from 'gatsby-link';
+import Link, { navigateTo } from 'gatsby-link';
 import firebase from 'firebase';
 
 import BasicModal from '../../components/UI/BasicModal';
@@ -29,6 +29,7 @@ class Story extends Component {
 
   componentDidMount() {
     const querystring = document.URL.split('?')[1];
+    console.log('Mounted', querystring);
     if (querystring) {
       const querystringArr = querystring.split('&');
       querystringArr.forEach((query) => {
@@ -55,7 +56,7 @@ class Story extends Component {
         <li
           key={chapter.index}
         >
-          <Link to={`/story/chapter?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
+          <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
             {chapter.title}
           </Link>
         </li>
@@ -78,7 +79,7 @@ class Story extends Component {
     e.preventDefault();
     db.createNewChapter(this.uid, this.storyId, this.state.newChapterTitle).then((res) => {
       const chapterId = res.path.pieces_[res.path.pieces_.length - 1];
-      this.props.history.push(`/story/chapter?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapterId}`)
+      navigateTo(`/story/chapter?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapterId}`)
     });
   }
 

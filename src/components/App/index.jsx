@@ -11,10 +11,6 @@ import AccountPage from '../Account';
 import withAuthentication from '../Session/withAuthentication';
 import * as routes from '../../constants/routes';
 
-// import '../../scss/main.scss';
-// import 'styles.css';
-import './test.css';
-
 const App = () =>
   <Router>
     <div className="app">

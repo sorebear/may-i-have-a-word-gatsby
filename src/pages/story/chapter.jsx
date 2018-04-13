@@ -66,7 +66,7 @@ class Chapter extends Component {
     return (
       <div>
         <div>
-          <Link to={`../story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
+          <Link to={`story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
             <h3>{this.storyTitle.replace('_', ' ')}</h3>
           </Link>
           <h4>{this.state.chapter.title}</h4>
