@@ -21,7 +21,10 @@ export const createNewChapter = (id, storyId, title) =>
   db.ref(`users/${id}/stories/${storyId}/chapters`).push({
     title: title.replace(' ', '_'),
     createdAt: new Date(),
-    text: 'Once upon a time...'
+    text: [
+      'Once upon a time...',
+      ''
+    ],
   });
 
 // READ REQUESTS

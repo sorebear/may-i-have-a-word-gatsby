@@ -14,32 +14,17 @@ class Chapter extends Component {
   constructor(props) {
     super(props);
     this.updateChapterText = this.updateChapterText.bind(this);
+    this.handleReturnOrTab = this.handleReturnOrTab.bind(this);
     this.saveChapter = this.saveChapter.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.storyTitle = null;
     this.storyId = null;
     this.chapterId = null;
     this.state = {
-      chapter: {}
+      chapter: {},
+      selectionEnd: 0,
+      resetSelection: false,
     };
-  }
-
-  updateChapterText(e) {
-    const { chapter } = this.state;
-    chapter.text = e.target.value;
-    this.setState({
-      chapter: { ...chapter }
-    })
-  }
-
-  saveChapter() {
-    db.saveChapter(this.uid, this.storyId, this.chapterId, this.state.chapter).then(() => {
-      this.showSavedNotification();
-    });
-  }
-
-  showSavedNotification() {
-    console.log('Your Chapter has been saved');
   }
 
   componentDidMount() {
@@ -57,6 +42,74 @@ class Chapter extends Component {
     );
   }
 
+  componentDidUpdate() {
+    if (this.state.resetSelection) {
+      document.getElementById('textarea').selectionEnd = this.state.selectionEnd;
+      this.setState({
+        resetSelection: false
+      });
+    }
+  }
+
+  updateChapterText(e) {
+    const { chapter } = this.state;
+    chapter.text = e.target.value;
+    this.setState({
+      chapter: { ...chapter }
+    });
+  }
+
+  onTextareaMounted(e) {
+    e.target.focus();
+  }
+
+  handleKeyDown(e) {
+    if (e.keyCode === 13) {
+      this.handleReturnOrTab();
+    } else if (e.keyCode === 9) {
+      e.preventDefault();
+      this.handleReturnOrTab(e);
+    }
+  }
+
+  handleReturnOrTab(e) {
+    if (e.keyCode === 13) {
+      console.log('Return pressed');
+      const { chapter } = this.state;
+      chapter.text = 
+        chapter.text.substring(0, e.target.selectionStart) + 
+        '  ' + 
+        chapter.text.substring(e.target.selectionEnd);
+      this.setState({
+        chapter: { ...chapter },
+        selectionEnd: e.target.selectionStart + 2,
+        resetSelection: true
+      });
+    } else if (e.keyCode === 9) {
+      e.preventDefault();
+      const { chapter } = this.state;
+      chapter.text = 
+        chapter.text.substring(0, e.target.selectionStart) + 
+        '  ' + 
+        chapter.text.substring(e.target.selectionEnd);
+      this.setState({
+        chapter: { ...chapter },
+        selectionEnd: e.target.selectionStart + 2,
+        resetSelection: true
+      });
+    };
+  }
+
+  saveChapter() {
+    db.saveChapter(this.uid, this.storyId, this.chapterId, this.state.chapter).then(() => {
+      this.showSavedNotification();
+    });
+  }
+
+  showSavedNotification() {
+    console.log('Your Chapter has been saved');
+  }
+
   render() {
     if (!this.storyTitle) {
       return (
@@ -64,19 +117,22 @@ class Chapter extends Component {
       );
     }
     return (
-      <div>
-        <div>
+      <section className="section">
+        <div className="has-text-centered">
           <Link to={`story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
-            <h3>{this.storyTitle.replace('_', ' ')}</h3>
+            <h2 className="title">{this.storyTitle.replace('_', ' ')}</h2>
           </Link>
           <h4>{this.state.chapter.title}</h4>
         </div>
         <textarea
+          id="textarea"
+          onLoad={this.onTextareaMounted}
           onBlur={this.saveChapter}
           onChange={this.updateChapterText}
+          onKeyDown={this.handleReturnOrTab}
           value={this.state.chapter.text}
         />
-      </div>
+      </section>
     );
   }
 }

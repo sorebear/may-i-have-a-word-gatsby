@@ -26,6 +26,7 @@ class HomePage extends Component {
       newStoryTitle: '',
       showCreateNewStoryModal: false,
       showDeleteConfirmationModal: false,
+      deleteConfirmationIndex: null,
     };
   }
 
@@ -55,6 +56,10 @@ class HomePage extends Component {
   deleteStory(storyId) {
     db.deleteStory(this.uid, storyId).then(() => {
       this.getCurrentUserStories();
+      this.setState({ 
+        showDeleteConfirmationModal: false, 
+        deleteConfirmationIndex: null 
+      });
     });
   }
 
@@ -66,7 +71,10 @@ class HomePage extends Component {
             {story.title.replace('_', ' ')}
           </Link>
           <button
-            onClick={() => this.setState({ showDeleteConfirmationModal: story.title })}
+            onClick={() => this.setState({
+              showDeleteConfirmationModal: story.title,
+              deleteConfirmationIndex: story.index
+            })}
           >
             Delete Story
           </button>
@@ -137,7 +145,7 @@ class HomePage extends Component {
               Are you sure you want to delete "{this.state.showDeleteConfirmationModal}"
             </h3>
             <button
-              onClick={() => this.deleteStory(story.index)}
+              onClick={() => this.deleteStory(this.state.deleteConfirmationIndex)}
             >
               Yes, Delete
             </button>
