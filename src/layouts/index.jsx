@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import Navigation from '../components/Navigation';
 import withAuthentication from '../components/Session/withAuthentication';
 
-// import './main.css';
+import './main.css';
 import '../scss/main.scss';
 
 const TemplateWrapper = ({ children }) => (
