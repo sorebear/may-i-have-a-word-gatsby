@@ -12,14 +12,14 @@ export const doCreateUser = (id, username, email) =>
 
 export const createNewStory = (id, title) =>
   db.ref(`users/${id}/stories`).push({
-    title: title.replace(' ', '_'),
+    title: title.replace(/\ /g, '_'),
     createdAt: new Date(),
     chapters: [],
   });
 
 export const createNewChapter = (id, storyId, title) =>
   db.ref(`users/${id}/stories/${storyId}/chapters`).push({
-    title: title.replace(' ', '_'),
+    title: title.replace(/\ /g, '_'),
     createdAt: new Date(),
     text: [
       'Once upon a time...',
@@ -53,5 +53,8 @@ export const saveChapter = (userId, storyId, chapterId, updatedChapter) =>
 
 export const deleteStory = (userId, storyId) =>
   db.ref(`users/${userId}/stories/${storyId}`).remove();
+
+export const deleteChapter = (userId, storyId, chapterId) =>
+  db.ref(`users/${userId}/stories/${storyId}/chapters/${chapterId}`).remove();
 
 // Other db APIs ...

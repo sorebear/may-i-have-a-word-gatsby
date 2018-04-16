@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const BasicModal = ({ children, className, showModal }) => (
-  <div className="modal-mask" style={{ display: showModal ? 'flex' : 'none' }}>
-    <div className={`modal ${className}`}>
-      {children}
-    </div>
+  <div className="modal" style={{ display: showModal ? 'flex' : 'none' }}>
+    <div className="modal-background" />
+    {children}
   </div>
 );
 

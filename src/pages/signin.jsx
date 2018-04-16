@@ -5,11 +5,11 @@ import { SignUpLink } from '../components/SignUp';
 import { PasswordForgetLink } from '../components/PasswordForget';
 
 const SignInPage = () =>
-  <div>
-    <h1>SignIn</h1>
+  <section className="section">
+    <h2 className="title">Sign In</h2>
     <SignInForm />
     <PasswordForgetLink />
     <SignUpLink />
-  </div>
+  </section>
 
 export default SignInPage;

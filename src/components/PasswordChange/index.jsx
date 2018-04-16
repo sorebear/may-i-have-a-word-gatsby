@@ -47,18 +47,24 @@ class PasswordChangeForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <input
+          className="input"
           value={passwordOne}
           onChange={event => this.setState(updateByPropertyName('passwordOne', event.target.value))}
           type="password"
           placeholder="New Password"
         />
         <input
+          className="input"
           value={passwordTwo}
           onChange={event => this.setState(updateByPropertyName('passwordTwo', event.target.value))}
           type="password"
           placeholder="Confirm New Password"
         />
-        <button disabled={isInvalid} type="submit">
+        <button 
+          className="button"
+          disabled={isInvalid} 
+          type="submit"
+        >
           Reset My Password
         </button>
 

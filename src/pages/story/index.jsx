@@ -24,6 +24,7 @@ class Story extends Component {
       newChapterTitle: '',
       story : {},
       showNewChapterModal: false,
+      showDeleteConfirmationModal: false,
     }
   }
 
@@ -53,18 +54,36 @@ class Story extends Component {
     }
     return fromObjectToList(this.state.story.chapters).map((chapter, index) => {
       return (
-        <li key={chapter.index}>
+        <li className="panel-block justify-between" key={chapter.index}>
           <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
-            {chapter.title}
+            Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
           </Link>
+          <button
+            className="delete"
+            onClick={() => this.setState({
+              showDeleteConfirmationModal: chapter.title.replace(/\_/g, ' '),
+              deleteConfirmationIndex: chapter.index
+            })}
+          />
         </li>
       )
     })
   }
 
+  deleteChapter(chapterId) {
+    db.deleteChapter(this.uid, this.storyId, chapterId).then(() => {
+      this.getAllChapters();
+      this.setState({ 
+        showDeleteConfirmationModal: false, 
+        deleteConfirmationIndex: null 
+      });
+    });
+  }
+
   closeModalAndResetInput() {
     this.setState({
       showNewChapterModal: false,
+      showDeleteConfirmationModal: false,
       newChapterTitle: '',
     });
   }
@@ -82,49 +101,96 @@ class Story extends Component {
   }
 
   render() {
+    console.log(this.state);
     if (!this.state.story.title) {
       return (
         <h3>Loading...</h3>
       );
     }
     return (
-      <div>
+      <section className="section has-text-centered">
         <div>
-          <h3>{this.state.story.title.replace('_', ' ')}</h3>
+          <h3 className="title is-primary">{this.state.story.title.replace('_', ' ')}</h3>
         </div>
-        <ol>
+        <ol className="panel">
           {this.renderChapters()}
         </ol>
-        <button onClick={() => this.setState({ showNewChapterModal: true }) }>
+        <button 
+          className="button"
+          onClick={() => this.setState({ showNewChapterModal: true }) }
+        >
           Add New Chapter
         </button>
         <BasicModal showModal={this.state.showNewChapterModal}>
-          <div>
-            <button 
-              type="button"
-              className="close-modal-button"
-              onClick={this.closeModalAndResetInput}
-            >
-              <img 
-                src="https://res.cloudinary.com/sorebear/image/upload/v1521228838/svg-icons/ess-light/essential-light-10-close-big.svg"
-                alt="close" 
-              />
-            </button>
+          <div className="modal-card">
             <form
               onSubmit={this.addNewChapter}
             >
-              <h3>Add New Chapter</h3>
-              <input 
-                onChange={this.updateNewChapterTitle}
-                value={this.state.newChapterTitle}
-              />
-              <button type="submit">
-                Create
-              </button>
+              <header className="modal-card-head justify-between">
+                <p className="modal-card-title">Create New Chapter</p>
+                <button 
+                  type="button"
+                  className="delete"
+                  onClick={this.closeModalAndResetInput}
+                />
+              </header>
+              <section className="modal-card-body">
+                <h3 className="title">Chapter Title</h3>
+                <input 
+                  type="text"
+                  className="input"
+                  onChange={this.updateNewChapterTitle}
+                  value={this.state.newChapterTitle}
+                  required
+                />
+              </section>
+              <footer className="modal-card-foot justify-center">
+                <button 
+                  className="button"
+                  type="submit"
+                >
+                  Create
+                </button>
+              </footer>
             </form>
           </div>
         </BasicModal>
-      </div>
+        <BasicModal showModal={this.state.showDeleteConfirmationModal}>
+          <div className="modal-card">
+            <header className="modal-card-head justify-between">
+              <p className="modal-card-tile">Delete Chapter Confirmation</p>
+              <button 
+                className="delete"
+                aria-label="close"
+                onClick={this.closeModalAndResetInput}
+              />
+            </header>
+            <section className="modal-card-body has-text-centered">
+              <p>
+                Are you sure you want to delete
+              </p>
+              <h3 className="title">
+                "{this.state.showDeleteConfirmationModal}"
+              </h3>
+            </section>
+            <footer className="modal-card-foot justify-center">
+              <button 
+                type="button"
+                className="close-modal-button button"
+                onClick={this.closeModalAndResetInput}
+                >
+                No, Don't Delete
+              </button>
+              <button
+                className="button is-danger"
+                onClick={() => this.deleteChapter(this.state.deleteConfirmationIndex)}
+              >
+                Yes, Delete
+              </button>
+            </footer>
+          </div>
+        </BasicModal>
+      </section>
     );
   }
 }

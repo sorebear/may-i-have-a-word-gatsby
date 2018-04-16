@@ -3,9 +3,9 @@ import React from 'react';
 import { PasswordForgetForm } from '../components/PasswordForget';
 
 const PasswordForgetPage = () =>
-  <div>
-    <h1>PasswordForget</h1>
+  <section className="section">
+    <h2 className="title">Password Forget</h2>
     <PasswordForgetForm />
-  </div>
+  </section>
 
 export default PasswordForgetPage;

@@ -66,17 +66,17 @@ class HomePage extends Component {
   renderUserStories() {
     return this.state.userStories.map(story => {
       return (
-        <li key={story.index}>
+        <li className="panel-block justify-between" key={story.index}>
           <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
             {story.title.replace('_', ' ')}
           </Link>
           <button
             onClick={() => this.setState({
-              showDeleteConfirmationModal: story.title,
+              showDeleteConfirmationModal: story.title.replace(/\_/g, ' '),
               deleteConfirmationIndex: story.index
             })}
           >
-            Delete Story
+            <div className="delete is-danger" />
           </button>
         </li>
       );
@@ -93,70 +93,91 @@ class HomePage extends Component {
 
   render() {
     return (
-      <div>
-        <button
-          onClick={() => this.setState({ showCreateNewStoryModal: true })}
-        >
-          Create New Story
-        </button>
-        <h3>Your Stories</h3>
-        <ul>
+      <section className="section">
+        <div className="has-text-centered">
+          <h3 className="title">Your Stories</h3>
+        </div>
+        <ul className="panel">
           {this.renderUserStories()}
         </ul>
+        <div className="has-text-centered">
+          <button
+            className="button"
+            onClick={() => this.setState({ showCreateNewStoryModal: true })}
+          >
+            Create New Story
+          </button>
+        </div>
         <BasicModal showModal={this.state.showCreateNewStoryModal}>
-          <div>
-            <button 
-              type="button"
-              className="close-modal-button"
-              onClick={this.closeModalAndResetInput}
-            >
-              <img 
-                src="https://res.cloudinary.com/sorebear/image/upload/v1521228838/svg-icons/ess-light/essential-light-10-close-big.svg"
-                alt="close" 
-              />
-            </button>
+          <div className="modal-card">
             <form
               onSubmit={this.createNewStory}
             >
-              <h3>Create New Story</h3>
-              <input 
-                onChange={this.updateNewStoryTitle}
-                value={this.state.newStoryTitle}
-              />
-              <button type="submit">
-                Create
-              </button>
+              <header className="modal-card-head justify-between">
+                <p className="modal-card-tile">Create New Story</p>
+                <button 
+                  className="delete"
+                  aria-label="close"
+                  onClick={this.closeModalAndResetInput}
+                />
+              </header>
+              <section className="modal-card-body has-text-centered">
+                <h3 className="title">Story Title</h3>
+                <input 
+                  className="input"
+                  type="text"
+                  onChange={this.updateNewStoryTitle}
+                  value={this.state.newStoryTitle}
+                  required
+                />
+              </section>
+              <footer className="modal-card-foot justify-center">
+                <button 
+                  className="button"
+                  type="submit"
+                >
+                  Create
+                </button>
+              </footer>
             </form>
           </div>
         </BasicModal>
         <BasicModal showModal={this.state.showDeleteConfirmationModal}>
-          <div>
-            <button 
-              type="button"
-              className="close-modal-button"
-              onClick={this.closeModalAndResetInput}
-            >
-              <img 
-                src="https://res.cloudinary.com/sorebear/image/upload/v1521228838/svg-icons/ess-light/essential-light-10-close-big.svg"
-                alt="close" 
+          <div className="modal-card">
+            <header className="modal-card-head justify-between">
+              <p className="modal-card-tile">Delete Confirmation</p>
+              <button 
+                className="delete"
+                aria-label="close"
+                onClick={this.closeModalAndResetInput}
               />
-            </button>
-            <h3>
-              Are you sure you want to delete "{this.state.showDeleteConfirmationModal}"
-            </h3>
-            <button
-              onClick={() => this.deleteStory(this.state.deleteConfirmationIndex)}
-            >
-              Yes, Delete
-            </button>
-            <button 
-              onClick={this.closeModalAndResetInput}
-            >
-              No, Don't Delete
-            </button>
+            </header>
+            <section className="modal-card-body has-text-centered">
+              <p>
+                Are you sure you want to delete
+              </p>
+              <h3 className="title">
+                "{this.state.showDeleteConfirmationModal}"
+              </h3>
+            </section>
+            <footer className="modal-card-foot justify-center">
+              <button 
+                type="button"
+                className="close-modal-button button"
+                onClick={this.closeModalAndResetInput}
+                >
+                No, Don't Delete
+              </button>
+              <button
+                className="button is-danger"
+                onClick={() => this.deleteStory(this.state.deleteConfirmationIndex)}
+              >
+                Yes, Delete
+              </button>
+            </footer>
           </div>
         </BasicModal>
-      </div>
+      </section>
     );
   }
 }

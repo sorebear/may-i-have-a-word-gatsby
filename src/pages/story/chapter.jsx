@@ -120,9 +120,9 @@ class Chapter extends Component {
       <section className="section">
         <div className="has-text-centered">
           <Link to={`story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
-            <h2 className="title">{this.storyTitle.replace('_', ' ')}</h2>
+            <h2 className="title">{this.storyTitle.replace(/\_/g, ' ')}</h2>
           </Link>
-          <h4>{this.state.chapter.title}</h4>
+          <h4>{this.state.chapter.title.replace(/\_/g, ' ')}</h4>
         </div>
         <textarea
           id="textarea"
