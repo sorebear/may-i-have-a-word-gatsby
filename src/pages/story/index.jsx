@@ -110,7 +110,7 @@ class Story extends Component {
     return (
       <section className="section has-text-centered">
         <div className="mb-3">
-          <h3 className="title is-primary">{this.state.story.title.replace('_', ' ')}</h3>
+          <h3 className="title is-primary">{this.state.story.title.replace(/\_/g, ' ')}</h3>
         </div>
         <ol className="panel">
           {this.renderChapters()}

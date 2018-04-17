@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { auth } from '../../firebase';
+import Toast from '../UI/Toast';
 
 const updateByPropertyName = (propertyName, value) => () => ({
   [propertyName]: value,
@@ -10,12 +11,13 @@ const INITIAL_STATE = {
   passwordOne: '',
   passwordTwo: '',
   error: null,
+  showToast: false,
 };
 
 class PasswordChangeForm extends Component {
   constructor(props) {
     super(props);
-
+    this.hideToast = this.hideToast.bind(this);
     this.state = { ...INITIAL_STATE };
   }
 
@@ -24,13 +26,17 @@ class PasswordChangeForm extends Component {
 
     auth.doPasswordUpdate(passwordOne)
       .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
+        this.setState(() => ({ ...INITIAL_STATE, showToast: true }));
       })
       .catch(error => {
         this.setState(updateByPropertyName('error', error));
       });
 
     event.preventDefault();
+  }
+
+  hideToast() {
+    this.setState({ showToast: false });
   }
 
   render() {
@@ -69,6 +75,9 @@ class PasswordChangeForm extends Component {
         </button>
 
         { error && <p>{error.message}</p> }
+        <Toast showToast={this.state.showToast} hideToast={this.hideToast}>
+          Password Changed
+        </Toast>
       </form>
     );
   }

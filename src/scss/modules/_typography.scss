@@ -35,8 +35,14 @@ h6 {
   font-family: $creteRound;
 }
 
-p, li, a, textarea {
+p, li, a, textarea.chapter-text {
   // font-size: 1.6rem;
   font-size: 1.4rem;
   font-family: $josefin;
+}
+
+a {
+  .title {
+    display: inline-block;
+  }
 }

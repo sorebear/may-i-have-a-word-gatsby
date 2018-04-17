@@ -1,0 +1,46 @@
+@keyframes makeAToast {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+
+  1% {
+    visibility: visible;
+    display: block;
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadedToast {
+  0% { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  99% { visibility: hidden; }
+  100% { opacity: 0; transform: translate(-50%, 0); }
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 3rem;
+  visibility: hidden;
+  transition: opacity 1;
+
+  .message-header {
+    border-radius: 4px 4px 4px 4px;
+  }
+  
+  &.active {
+    display: block;
+    animation: makeAToast 1s forwards;
+  }
+
+  &.fade {
+    display: block;
+    animation: fadeToast 1s forwards;
+  }
+}

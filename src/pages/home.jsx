@@ -46,7 +46,7 @@ class HomePage extends Component {
 
   createNewStory(e) {
     e.preventDefault();
-    const newStoryTitle = this.state.newStoryTitle.replace(' ', '_');
+    const newStoryTitle = this.state.newStoryTitle.replace(/\ /g, '_');
     db.createNewStory( this.uid, newStoryTitle).then((res) => {
       const storyId = res.path.pieces_[res.path.pieces_.length - 1];
       navigateTo(`/story/index.html?storyTitle=${this.state.newStoryTitle}&storyId=${storyId}`);
@@ -68,7 +68,7 @@ class HomePage extends Component {
       return (
         <li className="panel-block justify-between" key={story.index}>
           <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
-            {story.title.replace('_', ' ')}
+            {story.title.replace(/\_/g, ' ')}
           </Link>
           <button
             onClick={() => this.setState({
@@ -115,7 +115,8 @@ class HomePage extends Component {
             >
               <header className="modal-card-head justify-between">
                 <p className="modal-card-tile">Create New Story</p>
-                <button 
+                <button
+                  type="button"
                   className="delete"
                   aria-label="close"
                   onClick={this.closeModalAndResetInput}
@@ -128,6 +129,7 @@ class HomePage extends Component {
                   type="text"
                   onChange={this.updateNewStoryTitle}
                   value={this.state.newStoryTitle}
+                  name="story-title"
                   required
                 />
               </section>

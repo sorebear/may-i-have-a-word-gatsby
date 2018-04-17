@@ -3,6 +3,7 @@ import firebase from 'firebase';
 import Link from 'gatsby-link';
 
 import withAuthorization from '../../components/Session/withAuthorization';
+import Toast from '../../components/UI/Toast';
 import { db } from '../../firebase';
 
 const fromObjectToList = (object) =>
@@ -15,6 +16,7 @@ class Chapter extends Component {
     super(props);
     this.updateChapterText = this.updateChapterText.bind(this);
     this.handleReturnOrTab = this.handleReturnOrTab.bind(this);
+    this.hideToast = this.hideToast.bind(this);
     this.saveChapter = this.saveChapter.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.storyTitle = null;
@@ -24,6 +26,8 @@ class Chapter extends Component {
       chapter: {},
       selectionEnd: 0,
       resetSelection: false,
+      editable: false,
+      showToast: false,
     };
   }
 
@@ -59,32 +63,9 @@ class Chapter extends Component {
     });
   }
 
-  onTextareaMounted(e) {
-    e.target.focus();
-  }
-
-  handleKeyDown(e) {
-    if (e.keyCode === 13) {
-      this.handleReturnOrTab();
-    } else if (e.keyCode === 9) {
-      e.preventDefault();
-      this.handleReturnOrTab(e);
-    }
-  }
-
   handleReturnOrTab(e) {
     if (e.keyCode === 13) {
       console.log('Return pressed');
-      const { chapter } = this.state;
-      chapter.text = 
-        chapter.text.substring(0, e.target.selectionStart) + 
-        '  ' + 
-        chapter.text.substring(e.target.selectionEnd);
-      this.setState({
-        chapter: { ...chapter },
-        selectionEnd: e.target.selectionStart + 2,
-        resetSelection: true
-      });
     } else if (e.keyCode === 9) {
       e.preventDefault();
       const { chapter } = this.state;
@@ -101,6 +82,7 @@ class Chapter extends Component {
   }
 
   saveChapter() {
+    this.setState({ editable: false });
     db.saveChapter(this.uid, this.storyId, this.chapterId, this.state.chapter).then(() => {
       this.showSavedNotification();
     });
@@ -108,6 +90,11 @@ class Chapter extends Component {
 
   showSavedNotification() {
     console.log('Your Chapter has been saved');
+    this.setState({ showToast: true });
+  }
+
+  hideToast() {
+    this.setState({ showToast: false });
   }
 
   render() {
@@ -116,22 +103,26 @@ class Chapter extends Component {
         <h3>Loading...</h3>
       );
     }
+    const { chapter, editable, showToast } = this.state;
     return (
       <section className="section chapter">
         <div className="has-text-centered mb-3">
           <Link to={`../../story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
             <h2 className="title">{this.storyTitle.replace(/\_/g, ' ')}</h2>
           </Link>
-          <h4>{this.state.chapter.title.replace(/\_/g, ' ')}</h4>
+          <h4>{chapter.title.replace(/\_/g, ' ')}</h4>
         </div>
         <textarea
           id="textarea"
-          onLoad={this.onTextareaMounted}
           onBlur={this.saveChapter}
           onChange={this.updateChapterText}
           onKeyDown={this.handleReturnOrTab}
-          value={this.state.chapter.text}
+          className="chapter-text"
+          value={chapter.text}
         />
+        <Toast showToast={showToast} hideToast={this.hideToast}>
+          Chapter Saved
+        </Toast>
       </section>
     );
   }

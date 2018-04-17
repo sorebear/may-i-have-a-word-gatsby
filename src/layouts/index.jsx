@@ -11,10 +11,10 @@ import '../scss/main.scss';
 const TemplateWrapper = ({ children }) => (
   <div>
     <Helmet
-      title="Gatsby Firebase Authentication"
+      title="May I Have A Word"
       meta={[
-        { name: 'description', content: 'Gatsby Firebase Authentication' },
-        { name: 'keywords', content: 'Gatsby Firebase Authentication' },
+        { name: 'description', content: 'A Story Writing App Built with Gatsby and Firebase' },
+        { name: 'keywords', content: 'Gatsby Firebase Writing Authentication Story' },
       ]}
     />
     <div className="app">

@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-firebase-authentication",
+  "name": "may-i-have-a-word",
   "description": "May I Have A Word",
   "version": "1.0.0",
   "author": "Soren Baird <soren@sorenbaird.com>",
@@ -13,7 +13,7 @@
     "prop-types": "^15.6.0"
   },
   "keywords": [
-    "gatsby"
+    "gatsby writing"
   ],
   "license": "MIT",
   "main": "n/a",
