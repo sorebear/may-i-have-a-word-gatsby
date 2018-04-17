@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "author": "Soren Baird <soren@sorenbaird.com>",
   "dependencies": {
-    "bulma": "^0.7.0",
     "dotenv": "^5.0.1",
     "firebase": "^4.8.0",
     "gatsby": "^1.9.127",
