@@ -94,7 +94,7 @@ class HomePage extends Component {
   render() {
     return (
       <section className="section">
-        <div className="has-text-centered">
+        <div className="has-text-centered mb-3">
           <h3 className="title">Your Stories</h3>
         </div>
         <ul className="panel">

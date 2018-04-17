@@ -17,14 +17,6 @@ button {
   border: none;
 }
 
-.delete {
-  background-color: $orange;
-
-  &:hover {
-    background-color: darken($orange, 15%);
-  }
-}
-
 .justify-between {
   display: flex;
   justify-content: space-between;
@@ -35,11 +27,14 @@ button {
   justify-content: center;
 }
 
+.mb-3 {
+  margin-bottom: 3rem;
+}
+
 textarea {
   width: 100%;
   height: 80vh;
-  margin-top: 3rem;
-  // background-color: #eee;
+  background-color: transparent;
   resize: none;
   border: none;
 
@@ -49,6 +44,14 @@ textarea {
   }
 }
 
+input {
+  margin-bottom: 1.5rem;
+}
+
 .section {
   padding-bottom: 0;
+
+  &.chapter {
+    // background-color: #efefef;
+  }
 }

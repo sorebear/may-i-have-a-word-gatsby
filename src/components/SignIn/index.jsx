@@ -57,7 +57,7 @@ class SignInForm extends Component {
       email === '';
 
     return (
-      <form onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit} className="mb-3">
         <input
           value={email}
           onChange={event => this.setState(updateByPropertyName('email', event.target.value))}

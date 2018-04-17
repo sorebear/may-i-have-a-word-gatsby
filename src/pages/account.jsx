@@ -5,12 +5,17 @@ import { PasswordForgetForm } from '../components/PasswordForget';
 import PasswordChangeForm from '../components/PasswordChange';
 import withAuthorization from '../components/Session/withAuthorization';
 
-const AccountPage = (props, { authUser }) =>
-  <div>
-    <h1>Account: {authUser.username}</h1>
-    <PasswordForgetForm />
-    <PasswordChangeForm />
-  </div>
+const AccountPage = (props, { authUser }) => {
+  const creationDate = new Date(authUser.metadata.creationTime);
+  return (
+    <section className="section">
+      <h1 className="title">Account: {authUser.email}</h1>
+      <h4 className="subtitle">Member Since: {creationDate.toLocaleDateString()}</h4>
+      <PasswordForgetForm />
+      <PasswordChangeForm />
+    </section>
+  )
+}
 
 AccountPage.contextTypes = {
   authUser: PropTypes.object,
