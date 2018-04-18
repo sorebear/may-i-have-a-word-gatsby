@@ -24,6 +24,7 @@ class Chapter extends Component {
     this.chapterId = null;
     this.state = {
       chapter: {},
+      story: {},
       selectionEnd: 0,
       resetSelection: false,
       editable: false,
@@ -40,6 +41,10 @@ class Chapter extends Component {
         this[splitQuerystringArr[0]] = splitQuerystringArr[1];
       });
     }
+
+    db.getStory(this.uid, this.storyId ).then(snapshot =>
+      this.setState({ story: snapshot.val().chapters })
+    );
 
     db.getChapter(this.uid, this.storyId, this.chapterId ).then(snapshot =>
       this.setState({ chapter: snapshot.val() })
@@ -89,12 +94,21 @@ class Chapter extends Component {
   }
 
   showSavedNotification() {
-    console.log('Your Chapter has been saved');
     this.setState({ showToast: true });
   }
 
   hideToast() {
     this.setState({ showToast: false });
+  }
+
+  renderChapters() {
+    return Object.keys(this.state.story).map(item => {
+      return (
+        <Link key={item} to="#">
+          <li className="is-active">{this.state.story[item]['title']}</li>
+        </Link>
+      )
+    });
   }
 
   render() {
@@ -103,6 +117,7 @@ class Chapter extends Component {
         <h3>Loading...</h3>
       );
     }
+    console.log(this.state.story);
     const { chapter, editable, showToast } = this.state;
     return (
       <section className="section chapter">
@@ -123,6 +138,21 @@ class Chapter extends Component {
         <Toast showToast={showToast} hideToast={this.hideToast}>
           Chapter Saved
         </Toast>
+        <aside className="menu side-menu">
+          <p className="menu-label">
+            {this.storyTitle.replace(/\_/g, ' ')}
+          </p>
+          <ul className="menu-list">
+            <li>
+              <Link className="is-active" to="#">
+                Chapters
+              </Link>
+              <ul className="menu-list">
+                {this.renderChapters()}
+              </ul>
+            </li>
+          </ul>
+        </aside>
       </section>
     );
   }
