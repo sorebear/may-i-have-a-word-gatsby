@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import { firebase } from '../../firebase';
 import * as routes from '../../constants/routes';
+import { UserProvider, UserContext } from '../../context/UserContext';
 
 const withAuthorization = (condition) => (Component) => {
   class WithAuthorization extends React.Component {

@@ -3,7 +3,7 @@ import Link, { navigateTo } from 'gatsby-link';
 import firebase from 'firebase';
 
 import BasicModal from '../../components/UI/BasicModal';
-import withAuthorization from '../../components/Session/withAuthorization';
+import withAuthorization from '../../components/session/withAuthorization';
 import { db } from '../../firebase';
 
 const fromObjectToList = (object) =>
@@ -101,7 +101,7 @@ class Story extends Component {
   }
 
   render() {
-    console.log(this.state);
+    console.log('Story Props:', this.props);
     if (!this.state.story.title) {
       return (
         <h3>Loading...</h3>

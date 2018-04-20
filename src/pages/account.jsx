@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { PasswordForgetForm } from '../components/PasswordForget';
-import PasswordChangeForm from '../components/PasswordChange';
-import withAuthorization from '../components/Session/withAuthorization';
+import { PasswordForgetForm } from '../components/auth/PasswordForget';
+import PasswordChangeForm from '../components/auth/PasswordChange';
+import withAuthorization from '../components/session/withAuthorization';
 
 const AccountPage = (props, { authUser }) => {
   const creationDate = new Date(authUser.metadata.creationTime);

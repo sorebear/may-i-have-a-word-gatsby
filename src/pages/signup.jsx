@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SignUpForm from '../components/SignUp';
+import SignUpForm from '../components/auth/SignUp';
 
 const SignUpPage = () =>
   <section className="section">

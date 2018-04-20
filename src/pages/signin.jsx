@@ -1,8 +1,8 @@
 import React from 'react';
 
-import SignInForm from '../components/SignIn';
-import { SignUpLink } from '../components/SignUp';
-import { PasswordForgetLink } from '../components/PasswordForget';
+import SignInForm from '../components/auth/SignIn';
+import { SignUpLink } from '../components/auth/SignUp';
+import { PasswordForgetLink } from '../components/auth/PasswordForget';
 
 const SignInPage = () =>
   <section className="section">

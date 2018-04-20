@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PasswordForgetForm } from '../components/PasswordForget';
+import { PasswordForgetForm } from '../components/auth/PasswordForget';
 
 const PasswordForgetPage = () =>
   <section className="section">

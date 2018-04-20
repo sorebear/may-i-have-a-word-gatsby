@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import Link from 'gatsby-link';
 
-import withAuthorization from '../../components/Session/withAuthorization';
+import withAuthorization from '../../components/session/withAuthorization';
 import Toast from '../../components/UI/Toast';
 import { db } from '../../firebase';
 
@@ -117,7 +117,7 @@ class Chapter extends Component {
         <h3>Loading...</h3>
       );
     }
-    console.log(this.state.story);
+    console.log('Chapter Props:', this.props);
     const { chapter, editable, showToast } = this.state;
     return (
       <section className="section chapter">

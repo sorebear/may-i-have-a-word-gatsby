@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 
-import Navigation from '../components/Navigation';
-import withAuthentication from '../components/Session/withAuthentication';
+import App from './app';
+import withAuthentication from '../components/session/withAuthentication';
+import { UserProvider, UserContext } from '../context/UserContext';
 
 // import './main.css';
 import '../scss/main.scss';
@@ -17,12 +18,21 @@ const TemplateWrapper = ({ children }) => (
         { name: 'keywords', content: 'Gatsby Firebase Writing Authentication Story' },
       ]}
     />
-    <div className="app">
-      <Navigation />
-      <div className="container">
-        {children()}
-      </div>
-    </div>
+    <UserProvider>
+      <UserContext.Consumer>
+        {({ status, uid, userStories, activeStory, activeChapter, getUserStories }) => (
+          <App
+            children={children}
+            status={status}
+            uid={uid}
+            userStories={userStories}
+            activeStory={activeStory}
+            activeChapter={activeChapter}
+            getUserStories={getUserStories}
+          />
+        )}
+      </UserContext.Consumer>
+    </UserProvider>
   </div>
 )
 

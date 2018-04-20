@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'gatsby-link';
 
-import SignOutButton from '../SignOut';
+import SignOutButton from '../auth/SignOut';
 import * as routes from '../../constants/routes';
 
 const Navigation = (props, { authUser }) =>

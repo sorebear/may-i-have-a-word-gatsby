@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Link, { navigateTo } from 'gatsby-link';
 
-import withAuthorization from '../components/Session/withAuthorization';
+import withAuthorization from '../components/session/withAuthorization';
 import firebase from 'firebase';
 import { db } from '../firebase';
 
@@ -31,13 +31,10 @@ class HomePage extends Component {
   }
 
   componentDidMount() {
-    this.getCurrentUserStories();
-  }
-
-  getCurrentUserStories() {
-    db.getUserStories(this.uid).then(snapshot =>
-      this.setState(() => ({ userStories: fromObjectToList(snapshot.val()) }))
-    );
+    const { status, getUserStories } = this.props;
+    if (status === 'uninitialized') {
+      getUserStories(firebase.auth().currentUser.uid);
+    }
   }
 
   updateNewStoryTitle(e) {
@@ -92,6 +89,7 @@ class HomePage extends Component {
   }
 
   render() {
+    console.log('Props:', this.props);
     return (
       <section className="section">
         <div className="has-text-centered mb-3">
