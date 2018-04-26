@@ -6,8 +6,8 @@ import App from './app';
 import withAuthentication from '../components/session/withAuthentication';
 import { UserProvider, UserContext } from '../context/UserContext';
 
-// import './main.css';
-import '../scss/main.scss';
+import './main.css';
+// import '../scss/main.scss';
 
 const TemplateWrapper = ({ children }) => (
   <div>
