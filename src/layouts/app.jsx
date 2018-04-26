@@ -1,11 +1,11 @@
 import React from 'react';
 import Navigation from '../components/ui/Navigation';
 
-export default ({ children }) => (
-<div className="app">
-    <Navigation />
-    <div className="container">
-      {children()}
+export default (props) => {
+  return (
+    <div className={`app ${props.status}`}>
+      <Navigation />      
+        {props.children()}
     </div>
-  </div>
-);
+  );
+}

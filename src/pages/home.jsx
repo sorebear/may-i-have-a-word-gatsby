@@ -15,14 +15,14 @@ const fromObjectToList = (object) =>
 class HomePage extends Component {
   constructor(props) {
     super(props);
+    this.deleteStory = this.deleteStory.bind(this);
     this.createNewStory = this.createNewStory.bind(this);
     this.updateNewStoryTitle = this.updateNewStoryTitle.bind(this);
     this.closeModalAndResetInput = this.closeModalAndResetInput.bind(this);
-    this.deleteStory = this.deleteStory.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.state = {
       users: [],
-      userStories: [],
+      userStories: {},
       newStoryTitle: '',
       showCreateNewStoryModal: false,
       showDeleteConfirmationModal: false,
@@ -31,10 +31,15 @@ class HomePage extends Component {
   }
 
   componentDidMount() {
-    const { status, getUserStories } = this.props;
-    if (status === 'uninitialized') {
-      getUserStories(firebase.auth().currentUser.uid);
-    }
+    this.getUserStories();
+  }
+
+  getUserStories() {
+    db.getUserStories(this.uid).then(snapshot =>
+      this.setState(() => ({ 
+        userStories: snapshot.val()
+      }))
+    );
   }
 
   updateNewStoryTitle(e) {
@@ -52,7 +57,7 @@ class HomePage extends Component {
 
   deleteStory(storyId) {
     db.deleteStory(this.uid, storyId).then(() => {
-      this.getCurrentUserStories();
+      this.getUserStories(this.state.uid);
       this.setState({ 
         showDeleteConfirmationModal: false, 
         deleteConfirmationIndex: null 
@@ -61,7 +66,7 @@ class HomePage extends Component {
   }
 
   renderUserStories() {
-    return this.state.userStories.map(story => {
+    return fromObjectToList(this.state.userStories).map(story => {
       return (
         <li className="panel-block justify-between" key={story.index}>
           <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
@@ -89,9 +94,8 @@ class HomePage extends Component {
   }
 
   render() {
-    console.log('Props:', this.props);
     return (
-      <section className="section">
+      <section className="section container">
         <div className="has-text-centered mb-3">
           <h3 className="title">Your Stories</h3>
         </div>

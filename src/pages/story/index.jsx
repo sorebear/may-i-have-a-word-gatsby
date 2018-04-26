@@ -20,9 +20,11 @@ class Story extends Component {
     this.uid = firebase.auth().currentUser.uid;
     this.storyId = null;
     this.storyTitle = null;
+    this.tabs = ['chapters', 'characters', 'locations', 'notes'];
     this.state = {
       newChapterTitle: '',
       story : {},
+      selectedList: 'chapters',
       showNewChapterModal: false,
       showDeleteConfirmationModal: false,
     }
@@ -30,7 +32,6 @@ class Story extends Component {
 
   componentDidMount() {
     const querystring = document.URL.split('?')[1];
-    console.log('Mounted', querystring);
     if (querystring) {
       const querystringArr = querystring.split('&');
       querystringArr.forEach((query) => {
@@ -48,26 +49,59 @@ class Story extends Component {
     );
   }
 
+  updateSelectedList(newList) {
+    this.setState({ selectedList: newList });
+  }
+
   renderChapters() {
-    if (!this.state.story.chapters) {
-      return <h5>You Currently Have No Chapters In Your Story</h5>
-    }
-    return fromObjectToList(this.state.story.chapters).map((chapter, index) => {
+    if (!this.state.story[this.state.selectedList]) {
       return (
-        <li className="panel-block justify-between" key={chapter.index}>
-          <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
-            Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
-          </Link>
-          <button
-            className="delete"
-            onClick={() => this.setState({
-              showDeleteConfirmationModal: chapter.title.replace(/\_/g, ' '),
-              deleteConfirmationIndex: chapter.index
-            })}
-          />
-        </li>
+        <div className="panel-block" style={{ justifyContent: 'center'}}>
+          You currently have no {this.state.selectedList} in your story.
+        </div>
+      );
+    }
+    return fromObjectToList(this.state.story[this.state.selectedList]).map((chapter, index) => {
+      return (
+        // <li className="panel-block justify-between" key={chapter.index}>
+        //   <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
+        //     Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
+        //   </Link>
+          // <button
+          //   className="delete"
+          //   onClick={() => this.setState({
+          //     showDeleteConfirmationModal: chapter.title.replace(/\_/g, ' '),
+          //     deleteConfirmationIndex: chapter.index
+          //   })}
+        //   />
+        // </li>
+        <Link 
+          key={chapter.index}
+          className="panel-block"
+          to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}
+        >          
+          <span className="panel-icon">
+            <i className="fa fa-book" aria-hidden="true"></i>
+          </span>
+          Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
+        </Link>
       )
     })
+  }
+
+  renderTabs() {
+    const { selectedList } = this.state;
+    return this.tabs.map(tab => {
+      return (
+        <a
+          key={tab} 
+          className={`story-tab capitalize ${tab === selectedList ? 'is-active' : ''}`}
+          onClick={() => this.setState({ selectedList: tab})}
+        >
+          {tab}
+        </a>
+      )
+    });
   }
 
   deleteChapter(chapterId) {
@@ -101,26 +135,38 @@ class Story extends Component {
   }
 
   render() {
-    console.log('Story Props:', this.props);
     if (!this.state.story.title) {
       return (
         <h3>Loading...</h3>
       );
     }
     return (
-      <section className="section has-text-centered">
-        <div className="mb-3">
-          <h3 className="title is-primary">{this.state.story.title.replace(/\_/g, ' ')}</h3>
-        </div>
-        <ol className="panel">
+      <section className="section container has-text-centered">
+        <nav className="panel">
+          <h3 className="panel-heading">
+            {this.state.story.title.replace(/\_/g, ' ')}
+          </h3>
+          <div className="panel-block">
+            <p className="control has-icons-left">
+              <input type="text" className="input mb-0" placeholder="Search" />
+              <span className="icon is-small is-left">
+                <i className="fa fa-search" aria-hidden="true"></i>
+              </span>
+            </p>
+          </div>
+          <p className="panel-tabs">
+            {this.renderTabs()}
+          </p>
           {this.renderChapters()}
-        </ol>
-        <button 
-          className="button"
-          onClick={() => this.setState({ showNewChapterModal: true }) }
-        >
-          Add New Chapter
-        </button>
+          <div className="panel-block" style={{ justifyContent: 'center' }}>
+            <button
+              className="button is-link is-outlined capitalize"
+              onClick={() => this.setState({ showNewChapterModal: true }) }
+            >
+              Add New {this.state.selectedList.slice(0, this.state.selectedList.length - 1)}
+            </button>
+          </div>
+        </nav>
         <BasicModal showModal={this.state.showNewChapterModal}>
           <div className="modal-card">
             <form

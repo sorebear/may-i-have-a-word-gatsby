@@ -14,7 +14,10 @@ export const createNewStory = (id, title) =>
   db.ref(`users/${id}/stories`).push({
     title: title.replace(/\ /g, '_'),
     createdAt: new Date(),
-    chapters: [],
+    chapters: {},
+    characters: {},
+    locations: {},
+    notes: {}
   });
 
 export const createNewChapter = (id, storyId, title) =>

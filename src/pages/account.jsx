@@ -8,7 +8,7 @@ import withAuthorization from '../components/session/withAuthorization';
 const AccountPage = (props, { authUser }) => {
   const creationDate = new Date(authUser.metadata.creationTime);
   return (
-    <section className="section">
+    <section className="section container">
       <h1 className="title">Account: {authUser.email}</h1>
       <h4 className="subtitle">Member Since: {creationDate.toLocaleDateString()}</h4>
       <PasswordForgetForm />

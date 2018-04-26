@@ -12,7 +12,6 @@ import withAuthentication from '../session/withAuthentication';
 import * as routes from '../../constants/routes';
 
 const AppContent = (props) => {
-  console.log('HELLO!', props);
   return (
     <Router>
       <div className="app test">

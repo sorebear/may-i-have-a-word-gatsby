@@ -27,6 +27,12 @@ button {
   justify-content: center;
 }
 
+.pb-3 { padding-bottom: 3rem; }
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
 .mb-3 {
   margin-bottom: 3rem;
 }
@@ -53,8 +59,21 @@ input {
 
 .section {
   padding-bottom: 0;
+}
 
-  &.chapter {
-    // background-color: #efefef;
+.capitalize {
+  text-transform: capitalize;
+}
+
+.menu-list .link {
+  border-radius: 2px;
+  color: $slate;
+  display: block;
+  padding: 0.5em 0.75em;
+  cursor: pointer;
+
+  &:hover {
+    background-color: whitesmoke;
+    color: lighten($slate, 10%);
   }
 }

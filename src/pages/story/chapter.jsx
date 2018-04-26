@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
-import Link from 'gatsby-link';
+import Link, { navigateTo } from 'gatsby-link';
 
 import withAuthorization from '../../components/session/withAuthorization';
 import Toast from '../../components/UI/Toast';
@@ -16,8 +16,9 @@ class Chapter extends Component {
     super(props);
     this.updateChapterText = this.updateChapterText.bind(this);
     this.handleReturnOrTab = this.handleReturnOrTab.bind(this);
-    this.hideToast = this.hideToast.bind(this);
+    this.changeChapter = this.changeChapter.bind(this);
     this.saveChapter = this.saveChapter.bind(this);
+    this.hideToast = this.hideToast.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.storyTitle = null;
     this.storyId = null;
@@ -29,10 +30,18 @@ class Chapter extends Component {
       resetSelection: false,
       editable: false,
       showToast: false,
+      showSideMenu: false,
+      chapterSaved: true,
     };
   }
 
   componentDidMount() {
+    this.readQuerystring();
+    this.getStory();
+    this.getChapter();
+  }
+
+  readQuerystring() {
     const querystring = document.URL.split('?')[1];
     if (querystring) {
       const querystringArr = querystring.split('&');
@@ -41,11 +50,15 @@ class Chapter extends Component {
         this[splitQuerystringArr[0]] = splitQuerystringArr[1];
       });
     }
+  }
 
+  getStory() {
     db.getStory(this.uid, this.storyId ).then(snapshot =>
       this.setState({ story: snapshot.val().chapters })
     );
-
+  }
+  
+  getChapter() {
     db.getChapter(this.uid, this.storyId, this.chapterId ).then(snapshot =>
       this.setState({ chapter: snapshot.val() })
     );
@@ -64,7 +77,8 @@ class Chapter extends Component {
     const { chapter } = this.state;
     chapter.text = e.target.value;
     this.setState({
-      chapter: { ...chapter }
+      chapter: { ...chapter },
+      chapterSaved: false
     });
   }
 
@@ -76,11 +90,11 @@ class Chapter extends Component {
       const { chapter } = this.state;
       chapter.text = 
         chapter.text.substring(0, e.target.selectionStart) + 
-        '  ' + 
+        '    ' + 
         chapter.text.substring(e.target.selectionEnd);
       this.setState({
         chapter: { ...chapter },
-        selectionEnd: e.target.selectionStart + 2,
+        selectionEnd: e.target.selectionStart + 4,
         resetSelection: true
       });
     };
@@ -94,7 +108,16 @@ class Chapter extends Component {
   }
 
   showSavedNotification() {
-    this.setState({ showToast: true });
+    this.setState({ 
+      showToast: true,
+      chapterSaved: true
+    });
+  }
+
+  changeChapter(chapterId) {
+    navigateTo(`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapterId}`);
+    this.chapterId = chapterId
+    this.getChapter();
   }
 
   hideToast() {
@@ -104,10 +127,18 @@ class Chapter extends Component {
   renderChapters() {
     return Object.keys(this.state.story).map(item => {
       return (
-        <Link key={item} to="#">
-          <li className="is-active">{this.state.story[item]['title']}</li>
-        </Link>
-      )
+        <div 
+          key={item}  
+          className="link"
+          onClick={() => this.changeChapter(item)}
+        >
+          <li 
+            className={`side-nav-chapter ${item === this.chapterId ? 'active' : ''}`}
+          >
+            {this.state.story[item]['title'].replace(/\_/g, ' ')}
+          </li>
+        </div>
+      );
     });
   }
 
@@ -117,28 +148,16 @@ class Chapter extends Component {
         <h3>Loading...</h3>
       );
     }
-    console.log('Chapter Props:', this.props);
-    const { chapter, editable, showToast } = this.state;
+    const { chapter, editable, showToast, showSideMenu } = this.state;
     return (
-      <section className="section chapter">
-        <div className="has-text-centered mb-3">
-          <Link to={`../../story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
-            <h2 className="title">{this.storyTitle.replace(/\_/g, ' ')}</h2>
-          </Link>
-          <h4>{chapter.title.replace(/\_/g, ' ')}</h4>
-        </div>
-        <textarea
-          id="textarea"
-          onBlur={this.saveChapter}
-          onChange={this.updateChapterText}
-          onKeyDown={this.handleReturnOrTab}
-          className="chapter-text"
-          value={chapter.text}
-        />
-        <Toast showToast={showToast} hideToast={this.hideToast}>
-          Chapter Saved
-        </Toast>
-        <aside className="menu side-menu">
+      <div className="chapter">
+        <aside className={`menu side-menu ${showSideMenu ? 'active' : ''}`}>
+          <button
+            className="side-menu-toggle"
+            onClick={() => this.setState({ showSideMenu: !this.state.showSideMenu })}
+          >
+            <i className="fa fa-arrow-right" />
+          </button>
           <p className="menu-label">
             {this.storyTitle.replace(/\_/g, ' ')}
           </p>
@@ -151,9 +170,62 @@ class Chapter extends Component {
                 {this.renderChapters()}
               </ul>
             </li>
+            <li>
+              <Link to="#">
+                Settings
+              </Link>
+              <ul className="menu-list">
+                
+              </ul>
+            </li>
+            <li>
+              <Link to="#">
+                Characters
+              </Link>
+              <ul className="menu-list">
+                <li className="link">
+                  Emma Whimsy
+                </li>
+                <li className="link">
+                  Banjo
+                </li>
+              </ul>
+            </li>
+            <li>
+              <Link to="#">
+                Locations
+              </Link>
+              <ul className="menu-list">
+                <li className="link">
+                  The Sleeping Palm
+                </li>
+                <li className="link">
+                  Emma's Home
+                </li>
+              </ul>
+            </li>
           </ul>
         </aside>
-      </section>
+        <section className="section container">
+          <div className="has-text-centered mb-3">
+            <Link to={`../../story/?storyTitle=${this.storyTitle}&storyId=${this.storyId}`}>
+              <h2 className="title">{this.storyTitle.replace(/\_/g, ' ')}</h2>
+            </Link>
+            <h4>{chapter.title.replace(/\_/g, ' ')}</h4>
+          </div>
+          <textarea
+            id="textarea"
+            onBlur={this.saveChapter}
+            onChange={this.updateChapterText}
+            onKeyDown={this.handleReturnOrTab}
+            className="chapter-text"
+            value={chapter.text}
+          />
+        </section>
+        <Toast showToast={showToast} hideToast={this.hideToast}>
+          Chapter Saved
+        </Toast>
+      </div>
     );
   }
 }

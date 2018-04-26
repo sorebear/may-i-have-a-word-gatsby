@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import { firebase } from '../../firebase';
+import { firebase, db } from '../../firebase';
 import * as routes from '../../constants/routes';
-import { UserProvider, UserContext } from '../../context/UserContext';
 
 const withAuthorization = (condition) => (Component) => {
   class WithAuthorization extends React.Component {
@@ -13,7 +12,7 @@ const withAuthorization = (condition) => (Component) => {
         if (!condition(authUser)) {
           this.props.history.push(routes.SIGN_IN);
         }
-      });
+      }); 
     }
 
     render() {
