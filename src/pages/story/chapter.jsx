@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import Link, { navigateTo } from 'gatsby-link';
 
-import withAuthorization from '../../components/session/withAuthorization';
+import withAuthorization from '../../components/auth/withAuthorization';
 import Toast from '../../components/UI/Toast';
 import { db } from '../../firebase';
 

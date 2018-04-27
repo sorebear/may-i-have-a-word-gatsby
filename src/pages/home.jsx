@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Link, { navigateTo } from 'gatsby-link';
 
-import withAuthorization from '../components/session/withAuthorization';
+import withAuthorization from '../components/auth/withAuthorization';
 import firebase from 'firebase';
 import { db } from '../firebase';
 

@@ -3,7 +3,7 @@ import Link, { navigateTo } from 'gatsby-link';
 import firebase from 'firebase';
 
 import BasicModal from '../../components/UI/BasicModal';
-import withAuthorization from '../../components/session/withAuthorization';
+import withAuthorization from '../../components/auth/withAuthorization';
 import { db } from '../../firebase';
 
 const fromObjectToList = (object) =>

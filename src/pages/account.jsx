@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 
 import { PasswordForgetForm } from '../components/auth/PasswordForget';
 import PasswordChangeForm from '../components/auth/PasswordChange';
-// import withAuthorization from '../components/session/withAuthorization';
-import '../components/session/withAuthorization';
+import withAuthorization from '../components/auth/withAuthorization';
 
 const AccountPage = (props, { authUser }) => {
   const creationDate = new Date(authUser.metadata.creationTime);

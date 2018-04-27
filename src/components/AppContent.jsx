@@ -8,7 +8,7 @@ import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
 import HomePage from '../Home';
 import AccountPage from '../Account';
-import withAuthentication from '../session/withAuthentication';
+import withAuthentication from '../auth/withAuthentication';
 import * as routes from '../../constants/routes';
 
 const AppContent = (props) => {

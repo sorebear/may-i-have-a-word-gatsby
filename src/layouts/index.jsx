@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 
-import withAuthentication from '../components/session/withAuthentication';
+import withAuthentication from '../components/auth/withAuthentication';
 import Navigation from '../components/ui/Navigation';
 
 // import './main.css';
