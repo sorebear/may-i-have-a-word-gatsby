@@ -1,0 +1,14 @@
+.hero-image {
+  height: 25rem;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  h3.title {
+    font-size: 8rem;
+    color: white;
+    text-shadow: 0 2px 5px rgba($slate, .3);
+  }
+}

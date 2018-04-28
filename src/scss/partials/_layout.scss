@@ -77,3 +77,30 @@ input {
     color: lighten($slate, 10%);
   }
 }
+
+.panel-block {
+  position: relative;
+}
+
+.edit,
+.edit:active {
+  position: absolute;
+  right: .75em;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  outline: none;
+
+  .fa-cog {
+    cursor: pointer;
+
+    &:hover {
+      color: $orange;
+      z-index: 10;
+    }
+
+    &:active {
+      color: darken($orange, 15%);
+    }
+  }  
+}

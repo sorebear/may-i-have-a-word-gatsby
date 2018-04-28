@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import Link, { navigateTo } from 'gatsby-link';
 import firebase from 'firebase';
 
-import BasicModal from '../../components/UI/BasicModal';
-import withAuthorization from '../../components/auth/withAuthorization';
 import { db } from '../../firebase';
+import { heroImgArr } from '../../constants/images';
+import BasicModal from '../../components/ui/BasicModal';
+import Hero from '../../components/ui/Hero';
+import withAuthorization from '../../components/auth/withAuthorization';
+import { isAbsolute } from 'path';
 
 const fromObjectToList = (object) =>
   object
@@ -14,19 +17,21 @@ const fromObjectToList = (object) =>
 class Story extends Component {
   constructor(props) {
     super(props);
+    this.editChapter = this.editChapter.bind(this);
     this.addNewChapter = this.addNewChapter.bind(this);
-    this.updateNewChapterTitle = this.updateNewChapterTitle.bind(this);
+    this.saveStoryUpdates = this.saveStoryUpdates.bind(this);
+    this.updateChapterTitleInput = this.updateChapterTitleInput.bind(this);
     this.closeModalAndResetInput = this.closeModalAndResetInput.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.storyId = null;
     this.storyTitle = null;
     this.tabs = ['chapters', 'characters', 'locations', 'notes'];
     this.state = {
-      newChapterTitle: '',
+      chapterTitleInput: '',
       story : {},
       selectedList: 'chapters',
       showNewChapterModal: false,
-      showDeleteConfirmationModal: false,
+      showEditModal: '',
     }
   }
 
@@ -39,7 +44,6 @@ class Story extends Component {
         this[splitQuerystringArr[0]] = splitQuerystringArr[1];
       });
     }
-
     this.getAllChapters();
   }
 
@@ -49,8 +53,26 @@ class Story extends Component {
     );
   }
 
+  editChapter(e, chapterIndex) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({
+      chapterTitleInput: this.state.story.chapters[chapterIndex].title.replace(/\_/g, ' '),
+      showEditModal: chapterIndex
+    });
+  }
+
   updateSelectedList(newList) {
     this.setState({ selectedList: newList });
+  }
+
+  saveStoryUpdates(e) {
+    e.preventDefault();
+    console.log('Saving');
+    const { chapterTitleInput, showEditModal } = this.state
+    db.saveStory(this.uid, this.storyId, showEditModal, chapterTitleInput.replace(/\ /g, '_')).then(() => {
+      this.getAllChapters();
+    });
   }
 
   renderChapters() {
@@ -63,19 +85,7 @@ class Story extends Component {
     }
     return fromObjectToList(this.state.story[this.state.selectedList]).map((chapter, index) => {
       return (
-        // <li className="panel-block justify-between" key={chapter.index}>
-        //   <Link to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}>
-        //     Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
-        //   </Link>
-          // <button
-          //   className="delete"
-          //   onClick={() => this.setState({
-          //     showDeleteConfirmationModal: chapter.title.replace(/\_/g, ' '),
-          //     deleteConfirmationIndex: chapter.index
-          //   })}
-        //   />
-        // </li>
-        <Link 
+        <Link
           key={chapter.index}
           className="panel-block"
           to={`/story/chapter/?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapter.index}`}
@@ -84,6 +94,12 @@ class Story extends Component {
             <i className="fa fa-book" aria-hidden="true"></i>
           </span>
           Chapter {index + 1}: {chapter.title.replace(/\_/g, ' ')}
+          <button 
+            onClick={(e) => this.editChapter(e, chapter.index)}
+            className="edit"
+          >
+          <i className="fa fa-cog fa-lg" />
+          </button>
         </Link>
       )
     })
@@ -104,12 +120,11 @@ class Story extends Component {
     });
   }
 
-  deleteChapter(chapterId) {
-    db.deleteChapter(this.uid, this.storyId, chapterId).then(() => {
+  deleteChapter() {
+    db.deleteChapter(this.uid, this.storyId, this.state.showEditModal).then(() => {
       this.getAllChapters();
       this.setState({ 
-        showDeleteConfirmationModal: false, 
-        deleteConfirmationIndex: null 
+        showEditModal: '', 
       });
     });
   }
@@ -117,18 +132,18 @@ class Story extends Component {
   closeModalAndResetInput() {
     this.setState({
       showNewChapterModal: false,
-      showDeleteConfirmationModal: false,
-      newChapterTitle: '',
+      showEditModal: false,
+      chapterTitleInput: '',
     });
   }
 
-  updateNewChapterTitle(e) {
-    this.setState({ newChapterTitle: e.target.value });
+  updateChapterTitleInput(e) {
+    this.setState({ chapterTitleInput: e.target.value });
   }
 
   addNewChapter(e) {
     e.preventDefault();
-    db.createNewChapter(this.uid, this.storyId, this.state.newChapterTitle).then((res) => {
+    db.createNewChapter(this.uid, this.storyId, this.state.chapterTitleInput).then((res) => {
       const chapterId = res.path.pieces_[res.path.pieces_.length - 1];
       navigateTo(`/story/chapter?storyTitle=${this.storyTitle}&storyId=${this.storyId}&chapterId=${chapterId}`)
     });
@@ -139,104 +154,124 @@ class Story extends Component {
       return (
         <h3>Loading...</h3>
       );
-    }
+    };
+    const { chapterTitleInput, story, selectedList, showEditModal, showNewChapterModal } = this.state;
+    const selectedChapterTitle = story.chapters[showEditModal] ? story.chapters[showEditModal].title.replace(/\_/g, ' ') : '';
     return (
-      <section className="section container has-text-centered">
-        <nav className="panel">
-          <h3 className="panel-heading">
-            {this.state.story.title.replace(/\_/g, ' ')}
-          </h3>
-          <div className="panel-block">
-            <p className="control has-icons-left">
-              <input type="text" className="input mb-0" placeholder="Search" />
-              <span className="icon is-small is-left">
-                <i className="fa fa-search" aria-hidden="true"></i>
-              </span>
-            </p>
-          </div>
-          <p className="panel-tabs">
-            {this.renderTabs()}
-          </p>
-          {this.renderChapters()}
-          <div className="panel-block" style={{ justifyContent: 'center' }}>
-            <button
-              className="button is-link is-outlined capitalize"
-              onClick={() => this.setState({ showNewChapterModal: true }) }
-            >
-              Add New {this.state.selectedList.slice(0, this.state.selectedList.length - 1)}
-            </button>
-          </div>
-        </nav>
-        <BasicModal showModal={this.state.showNewChapterModal}>
-          <div className="modal-card">
-            <form
-              onSubmit={this.addNewChapter}
-            >
-              <header className="modal-card-head justify-between">
-                <p className="modal-card-title">Create New Chapter</p>
-                <button 
-                  type="button"
-                  className="delete"
-                  onClick={this.closeModalAndResetInput}
-                />
-              </header>
-              <section className="modal-card-body">
-                <h3 className="title">Chapter Title</h3>
-                <input 
-                  type="text"
-                  className="input"
-                  onChange={this.updateNewChapterTitle}
-                  value={this.state.newChapterTitle}
-                  required
-                />
-              </section>
-              <footer className="modal-card-foot justify-center">
-                <button 
-                  className="button"
-                  type="submit"
-                >
-                  Create
-                </button>
-              </footer>
-            </form>
-          </div>
-        </BasicModal>
-        <BasicModal showModal={this.state.showDeleteConfirmationModal}>
-          <div className="modal-card">
-            <header className="modal-card-head justify-between">
-              <p className="modal-card-tile">Delete Chapter Confirmation</p>
-              <button 
-                className="delete"
-                aria-label="close"
-                onClick={this.closeModalAndResetInput}
-              />
-            </header>
-            <section className="modal-card-body has-text-centered">
-              <p>
-                Are you sure you want to delete
+      <div>
+        <Hero>
+            {story.title.replace(/\_/g, ' ')}
+        </Hero>
+        <section className="section container has-text-centered">
+          <nav className="panel">
+            <div className="panel-block">
+              <p className="control has-icons-left">
+                <input type="text" className="input mb-0" placeholder="Search" />
+                <span className="icon is-small is-left">
+                  <i className="fa fa-search" aria-hidden="true"></i>
+                </span>
               </p>
-              <h3 className="title">
-                "{this.state.showDeleteConfirmationModal}"
-              </h3>
-            </section>
-            <footer className="modal-card-foot justify-center">
-              <button 
-                type="button"
-                className="close-modal-button button"
-                onClick={this.closeModalAndResetInput}
-                >
-                No, Don't Delete
-              </button>
+            </div>
+            <p className="panel-tabs">
+              {this.renderTabs()}
+            </p>
+            {this.renderChapters()}
+            <div className="panel-block" style={{ justifyContent: 'center' }}>
               <button
-                className="button is-danger"
-                onClick={() => this.deleteChapter(this.state.deleteConfirmationIndex)}
+                className="button is-link is-outlined capitalize"
+                onClick={() => this.setState({ showNewChapterModal: true }) }
               >
-                Yes, Delete
+                Add New {selectedList.slice(0, selectedList.length - 1)}
               </button>
-            </footer>
-          </div>
-        </BasicModal>
-      </section>
+            </div>
+          </nav>
+          <BasicModal showModal={showNewChapterModal}>
+            <div className="modal-card">
+              <form onSubmit={this.addNewChapter}>
+                <header className="modal-card-head justify-between">
+                  <p className="modal-card-title">Create New Chapter</p>
+                  <button 
+                    type="button"
+                    className="delete"
+                    onClick={this.closeModalAndResetInput}
+                  />
+                </header>
+                <section className="modal-card-body">
+                  <h3 className="title">Chapter Title</h3>
+                  <input 
+                    type="text"
+                    className="input"
+                    name="new-chapter-title"
+                    onChange={this.updateChapterTitleInput}
+                    value={chapterTitleInput}
+                    required
+                  />
+                </section>
+                <footer className="modal-card-foot justify-center">
+                  <button 
+                    className="button"
+                    type="submit"
+                  >
+                    Create
+                  </button>
+                </footer>
+              </form>
+            </div>
+          </BasicModal>
+          <BasicModal showModal={showEditModal}>
+            <div className="modal-card has-text-left">
+              <form onSubmit={this.saveStoryUpdates}>
+                <header className="modal-card-head justify-between">
+                  <p className="modal-card-tile">
+                    Edit Chapter - {selectedChapterTitle}
+                  </p>
+                  <button 
+                    type="button"
+                    className="delete"
+                    aria-label="close"
+                    onClick={this.closeModalAndResetInput}
+                  />
+                </header>
+                <section className="modal-card-body">                    
+                  <h3 className="title">Chapter Title</h3>
+                  <input 
+                    type="text"
+                    className="input"
+                    name="edit-chapter-title"
+                    onChange={this.updateChapterTitleInput}
+                    value={chapterTitleInput}
+                    required
+                  />
+                  <h3 className="title">Delete Chapter</h3>
+                  <p className="subtitle">You cannot undo this action.</p>
+                  <button
+                    type="button"
+                    className="button is-danger"
+                    onClick={() => this.deleteChapter()}
+                  >
+                    Yes, Delete
+                  </button>
+                </section>
+                <footer className="modal-card-foot justify-center">
+                  <button 
+                    type="button"
+                    className="close-modal-button button"
+                    onClick={this.closeModalAndResetInput}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="button is-success"
+                  >
+                    Save Changes
+                  </button>
+                </footer>
+              </form>
+            </div>
+          </BasicModal>
+        </section>
+      </div>
     );
   }
 }

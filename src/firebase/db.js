@@ -43,6 +43,11 @@ export const onceGetUsers = () =>
 
 // UPDATE REQUESTS
 
+export const saveStory = (userId, storyId, chapterId, updatedTitle) =>
+  db.ref(`users/${userId}/stories/${storyId}/chapters/${chapterId}`).update({
+    title: updatedTitle,
+  })
+
 export const saveChapter = (userId, storyId, chapterId, updatedChapter) =>
   db.ref(`users/${userId}/stories/${storyId}/chapters/${chapterId}`).update({
     title: updatedChapter.title,

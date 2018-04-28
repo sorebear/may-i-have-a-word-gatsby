@@ -19,11 +19,11 @@ Navigation.contextTypes = {
 
 const NavigationAuth = () =>
   <div className="navbar" role="navigation" aria-label="main navigation">
-    <ul className="navbar-brand">
-      <li className="navbar-item"><Link to={routes.LANDING}>Landing</Link></li>
-      <li className="navbar-item"><Link to={routes.HOME}>Home</Link></li>
-    </ul>
+    <div className="navbar-brand">
+    <Link to={routes.HOME}><h3 className="navbar-item">May I Have A Word</h3></Link>
+    </div>
     <ul className="navbar-end">
+      <li className="navbar-item"><Link to={routes.LANDING}>Landing</Link></li>
       <li className="navbar-item"><Link to={routes.ACCOUNT}>Account</Link></li>
       <li className="navbar-item"><SignOutButton /></li>
     </ul>
