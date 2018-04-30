@@ -4,8 +4,9 @@ import firebase from 'firebase';
 
 import { db } from '../../firebase';
 import { heroImgArr } from '../../constants/images';
-import BasicModal from '../../components/ui/BasicModal';
-import Hero from '../../components/ui/Hero';
+import BasicModal from '../../components/UI/BasicModal';
+import NeWChapterModal from '../../components/UI/NewChapterModal';
+import Hero from '../../components/UI/Hero';
 import withAuthorization from '../../components/auth/withAuthorization';
 import { isAbsolute } from 'path';
 
@@ -18,7 +19,7 @@ class Story extends Component {
   constructor(props) {
     super(props);
     this.editChapter = this.editChapter.bind(this);
-    this.addNewChapter = this.addNewChapter.bind(this);
+    this.createNewChapter = this.createNewChapter.bind(this);
     this.saveStoryUpdates = this.saveStoryUpdates.bind(this);
     this.updateChapterTitleInput = this.updateChapterTitleInput.bind(this);
     this.closeModalAndResetInput = this.closeModalAndResetInput.bind(this);
@@ -141,7 +142,7 @@ class Story extends Component {
     this.setState({ chapterTitleInput: e.target.value });
   }
 
-  addNewChapter(e) {
+  createNewChapter(e) {
     e.preventDefault();
     db.createNewChapter(this.uid, this.storyId, this.state.chapterTitleInput).then((res) => {
       const chapterId = res.path.pieces_[res.path.pieces_.length - 1];
@@ -186,37 +187,7 @@ class Story extends Component {
             </div>
           </nav>
           <BasicModal showModal={showNewChapterModal}>
-            <div className="modal-card">
-              <form onSubmit={this.addNewChapter}>
-                <header className="modal-card-head justify-between">
-                  <p className="modal-card-title">Create New Chapter</p>
-                  <button 
-                    type="button"
-                    className="delete"
-                    onClick={this.closeModalAndResetInput}
-                  />
-                </header>
-                <section className="modal-card-body">
-                  <h3 className="title">Chapter Title</h3>
-                  <input 
-                    type="text"
-                    className="input"
-                    name="new-chapter-title"
-                    onChange={this.updateChapterTitleInput}
-                    value={chapterTitleInput}
-                    required
-                  />
-                </section>
-                <footer className="modal-card-foot justify-center">
-                  <button 
-                    className="button"
-                    type="submit"
-                  >
-                    Create
-                  </button>
-                </footer>
-              </form>
-            </div>
+            <NeWChapterModal onSubmit={this.createNewChapter} hideModal={this.closeModalAndResetInput} />
           </BasicModal>
           <BasicModal showModal={showEditModal}>
             <div className="modal-card has-text-left">
