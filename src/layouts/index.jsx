@@ -5,8 +5,8 @@ import Helmet from 'react-helmet';
 import withAuthentication from '../components/auth/withAuthentication';
 import Navigation from '../components/ui/Navigation';
 
-import './main.css';
-// import '../scss/main.scss';
+// import './main.css';
+import '../scss/main.scss';
 
 const TemplateWrapper = ({ children }) => (
   <div>

@@ -5,8 +5,9 @@ import withAuthorization from '../components/auth/withAuthorization';
 import firebase from 'firebase';
 import { db } from '../firebase';
 
-import BasicModal from '../components/ui/BasicModal';
-import Hero from '../components/ui/Hero';
+import BasicModal from '../components/UI/BasicModal';
+import NewStoryModal from '../components/UI/NewStoryModal';
+import Hero from '../components/UI/Hero';
 import { heroImgArr } from '../constants/images';
 
 const fromObjectToList = (object) =>
@@ -19,7 +20,6 @@ class HomePage extends Component {
     super(props);
     this.deleteStory = this.deleteStory.bind(this);
     this.createNewStory = this.createNewStory.bind(this);
-    this.updateNewStoryTitle = this.updateNewStoryTitle.bind(this);
     this.closeModalAndResetInput = this.closeModalAndResetInput.bind(this);
     this.uid = firebase.auth().currentUser.uid;
     this.tabs = ['all', 'novels', 'short-stories']
@@ -27,6 +27,7 @@ class HomePage extends Component {
       users: [],
       userStories: {},
       newStoryTitle: '',
+      activeTab: 'all',
       showCreateNewStoryModal: false,
       showDeleteConfirmationModal: false,
       deleteConfirmationIndex: null,
@@ -45,16 +46,11 @@ class HomePage extends Component {
     );
   }
 
-  updateNewStoryTitle(e) {
-    this.setState({ newStoryTitle: e.target.value });
-  }
-
-  createNewStory(e) {
+  createNewStory(e, newStoryTitle) {
     e.preventDefault();
-    const newStoryTitle = this.state.newStoryTitle.replace(/\ /g, '_');
     db.createNewStory( this.uid, newStoryTitle).then((res) => {
       const storyId = res.path.pieces_[res.path.pieces_.length - 1];
-      navigateTo(`/story/index.html?storyTitle=${this.state.newStoryTitle}&storyId=${storyId}`);
+      navigateTo(`/story/index.html?storyTitle=${newStoryTitle}&storyId=${storyId}`);
     });
   }
 
@@ -71,27 +67,48 @@ class HomePage extends Component {
   renderUserStories() {
     return fromObjectToList(this.state.userStories).map(story => {
       return (
-        <li className="panel-block justify-between" key={story.index}>
-          <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
-            {story.title.replace(/\_/g, ' ')}
-          </Link>
-          <button
-            onClick={() => this.setState({
-              showDeleteConfirmationModal: story.title.replace(/\_/g, ' '),
-              deleteConfirmationIndex: story.index
-            })}
+        <Link
+          key={story.index}
+          to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}
+          className="panel-block"
+        >
+          <span className="panel-icon">
+            <i className="fa fa-book" aria-hidden="true"/>
+          </span>
+          {story.title.replace(/\_/g, ' ')}
+          <button 
+            onClick={(e) => this.editStory(e, chapter.index)}
+            className="edit"
           >
-            <div className="delete is-danger" />
+            <i className="fa fa-cog fa-lg" />
           </button>
-        </li>
+        </Link>
+        // <li className="panel-block justify-between" key={story.index}>
+        //   <Link to={`/story/index.html?storyTitle=${story.title}&storyId=${story.index}`}>
+        
+        //   <button
+        //     onClick={() => this.setState({
+        //       showDeleteConfirmationModal: story.title.replace(/\_/g, ' '),
+        //       deleteConfirmationIndex: story.index
+        //     })}
+        //   >
+        //     <div className="delete is-danger" />
+        //   </button>
+        // </li>
       );
     });
   }
 
   renderTabs() {
+    const { activeTab } = this.state;
     return this.tabs.map((tab, index) => {
       return (
-        <a key={tab} className="story-tab capitalize">{tab}</a>
+        <a
+          key={tab}
+          className={`story-tab capitalize ${activeTab === tab ? 'is-active' : ''}`}
+        >
+          {tab}
+        </a>
       )
     })
   }
@@ -100,7 +117,6 @@ class HomePage extends Component {
     this.setState({
       showCreateNewStoryModal: false,
       showDeleteConfirmationModal: '',
-      newStoryTitle: ''
     });
   }
 
@@ -126,10 +142,8 @@ class HomePage extends Component {
             <p className="panel-tabs">
               {this.renderTabs()}
             </p>
-          </nav>
-          <ul className="panel">
             {this.renderUserStories()}
-          </ul>
+          </nav>
           <div className="has-text-centered">
             <button
               className="button"
@@ -139,40 +153,7 @@ class HomePage extends Component {
             </button>
           </div>
           <BasicModal showModal={this.state.showCreateNewStoryModal}>
-            <div className="modal-card">
-              <form
-                onSubmit={this.createNewStory}
-              >
-                <header className="modal-card-head justify-between">
-                  <p className="modal-card-tile">Create New Story</p>
-                  <button
-                    type="button"
-                    className="delete"
-                    aria-label="close"
-                    onClick={this.closeModalAndResetInput}
-                  />
-                </header>
-                <section className="modal-card-body has-text-centered">
-                  <h3 className="title">Story Title</h3>
-                  <input 
-                    className="input"
-                    type="text"
-                    onChange={this.updateNewStoryTitle}
-                    value={this.state.newStoryTitle}
-                    name="story-title"
-                    required
-                  />
-                </section>
-                <footer className="modal-card-foot justify-center">
-                  <button 
-                    className="button"
-                    type="submit"
-                  >
-                    Create
-                  </button>
-                </footer>
-              </form>
-            </div>
+            <NewStoryModal onSubmit={this.createNewStory} hideModal={this.closeModalAndResetInput} />
           </BasicModal>
           <BasicModal showModal={this.state.showDeleteConfirmationModal}>
             <div className="modal-card">
